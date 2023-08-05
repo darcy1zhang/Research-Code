@@ -10,7 +10,8 @@ def prediction(data_file):
     batch_num = 0
 
     # 预测S
-    model = torch.load("./pth/S_MLP.pth", map_location=torch.device('cpu'))
+    model = torch.load("pth/S_model_790_6.3887.pth", map_location=torch.device('cpu'))
+    # model = torch.load("./pth/S_model_490_15.5063.pth")
     dataset_test = Dataset(data_file, 0, 1)
     train_loader = DataLoader(dataset_test, batch_size=16, shuffle=False)
 
@@ -25,7 +26,7 @@ def prediction(data_file):
         # data, target = data.cuda(), target.cuda()
         output = model(data)
 
-        output = output * (max - min) + min
+        # output = output * (max - min) + min
 
         if 'sp_prediction' in locals():
             sp_prediction = torch.cat((sp_prediction, output), dim=0)
@@ -45,7 +46,7 @@ def prediction(data_file):
     return sp_MAE, sp_prediction
 
 if __name__ == "__main__":
-    data_file = "./data/simu_10000_0.1_141_178_test.npy"
+    data_file = "./data/test_without_resp.npy"
     prediction_file = './data/prediction.npy'
 
     sp_MAE, sp_prediction = prediction(data_file)

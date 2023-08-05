@@ -1,0 +1,147 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import argrelextrema, find_peaks
+from scipy.interpolate import interp1d
+from sklearn.preprocessing import MinMaxScaler
+from scipy.stats import skew, kurtosis
+from scipy.optimize import curve_fit
+import math
+
+
+# def update_array(a, data_tmp):
+#     i = 0
+#     while i < len(a) - 2:
+#         if data_tmp[a[i]] < data_tmp[a[i + 1]] < data_tmp[a[i + 2]]:
+#             a = np.delete(a, i)
+#         elif data_tmp[a[i]] > data_tmp[a[i + 1]] > data_tmp[a[i + 2]]:
+#             a = np.delete(a, i + 2)
+#         else:
+#             i += 1
+#     return a
+
+def delete_unique(a):
+    mean = np.mean(a)
+    std = np.std(a)
+    # 设置阈值
+    threshold = 1
+    # 使用布尔索引删除特殊值
+    filtered_a = a[np.abs(a - mean) <= threshold * std]
+    return filtered_a
+
+def get_mag_0(peaks2, data_tmp):
+    return np.mean(data_tmp[peaks2[::2]])
+
+def get_mag_1(peaks2, data_tmp):
+    return np.mean(data_tmp[peaks2[1::2]])
+
+def get_features(data_tmp, peaks2):
+    max = np.max(data_tmp)
+    min = np.min(data_tmp)
+    data_tmp_raw = data_tmp
+    data_tmp = data_tmp / max
+
+    fs = 100
+    t = np.linspace(0, 10, 10 * fs)
+    signal = data_tmp
+
+    # # 峰值检测
+    # peak_indices, _ = find_peaks(signal)  # 返回极大值点的索引
+    #
+    # # 线性插值
+    # t_peaks = t[peak_indices]  # 极大值点的时间
+    # peak_values = signal[peak_indices]  # 极大值点的幅值
+    # interpolation_func = interp1d(t_peaks, peak_values, kind='linear', bounds_error=False, fill_value=0)
+    # envelope = interpolation_func(t)
+    #
+    # peaks2, _ = find_peaks(envelope, distance=10)
+    #
+    # peaks2 = update_array(peaks2, data_tmp)
+    # if (data_tmp[peaks2[0]] > data_tmp[peaks2[1]]):
+    #     np.delete(peaks2, 0)
+    #
+    # if len(peaks2) % 2 != 0:
+    #     peaks2 = np.delete(peaks2, len(peaks2) - 1)
+
+
+    data_tmp = data_tmp_raw / max
+
+    diff_12 = peaks2[1::2] - peaks2[0::2]
+    diff_21 = peaks2[2::2] - peaks2[1:-1:2]
+    diff_22 = peaks2[2::2] - peaks2[:-2:2]
+
+    diff_12 = delete_unique(diff_12)
+    diff_21 = delete_unique(diff_21)
+    diff_22 = delete_unique(diff_22)
+
+    m_12 = np.mean(diff_12)
+    m_21 = np.mean(diff_21)
+    m_22 = np.mean(diff_22)
+
+    mag_0 = get_mag_0(peaks2, data_tmp_raw)
+    mag_1 = get_mag_1(peaks2, data_tmp_raw)
+
+    diff_12_mean = np.mean(diff_12)
+    diff_21_mean = np.mean(diff_21)
+
+    if diff_12_mean < diff_21_mean:
+        diff_min = diff_12_mean
+    else:
+        diff_min = diff_21_mean
+
+    diff_min = int(diff_min / 2)
+
+    kurt = []
+    for i in range(1, len(peaks2) - 1):
+        seg = data_tmp[peaks2[i] - diff_min:peaks2[i] + diff_min]
+        if len(seg) > 0:
+            kurt.append(kurtosis(seg))
+
+    kurt2 = kurt[::2]
+    kurt1 = kurt[1::2]
+
+    kurt2_mean = np.mean(kurt2)
+    kurt1_mean = np.mean(kurt1)
+
+    sk = []
+    for i in range(1, len(peaks2) - 1):
+        seg = data_tmp[peaks2[i] - diff_min:peaks2[i] + diff_min]
+        if len(seg) > 0:
+            sk.append(skew(seg))
+
+    skew2 = sk[::2]
+    skew1 = sk[1::2]
+
+    skew2_mean = np.mean(skew2)
+    skew1_mean = np.mean(skew1)
+
+    features = np.array([m_12, m_21, m_22, mag_0, mag_1, mag_0 / mag_1, kurt2_mean, kurt1_mean, skew1_mean, skew2_mean])
+    # features = np.array([m_12, m_21])
+
+    return features
+
+
+if __name__ == "__main__":
+    data_train = np.load("./data/train_without_resp.npy")
+    features = get_features(data_train[0, :1000])
+    for i in range(1, len(data_train[:,1])):
+        tmp = get_features(data_train[i, :1000])
+        features = np.vstack((features, tmp))
+    np.save("./data/features_train_without_resp.npy", features)
+
+    data_test = np.load("./data/test_without_resp.npy")
+    features = get_features(data_test[0, :1000])
+    for i in range(1, len(data_test[:,1])):
+        tmp = get_features(data_test[i, :1000])
+        features = np.vstack((features, tmp))
+    np.save("./data/features_test_without_resp.npy", features)
+
+    scaler = MinMaxScaler()
+
+    tmp = np.load("./data/features_train_without_resp.npy")
+    scaler.fit(tmp)
+    tmp = scaler.transform(tmp)
+    np.save("./data/features_train_without_resp_norm.npy", tmp)
+
+    tmp = np.load("./data/features_test.npy")
+    tmp = scaler.transform(tmp)
+    np.save("./data/features_test_without_resp_norm.npy", tmp)
