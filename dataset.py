@@ -19,9 +19,9 @@ class Dataset(Dataset):
     def __getitem__(self, idx):
 
         if self.train_or_test == 0:
-            X_train = self.features_train[idx, [6,8,9,10,11,12]]
+            X_train = self.features_train[idx, [6,8,9,10,11]]
         else:
-            X_train = self.features_test[idx, [6,8,9,10,11,12]]
+            X_train = self.features_test[idx, [6,8,9,10,11]] # [6,8,9,10,11]
 
         if self.x == 0:
             Y_train = self.data[idx, 1004]

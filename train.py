@@ -14,7 +14,7 @@ criterion = criterion.cuda()
 model = MLP().cuda()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-writer = SummaryWriter('logs/Feature_selected')
+writer = SummaryWriter('logs/fs5_sigmoid')
 
 
 tmp = np.load("./data/simu_20000_0.1_90_140_train.npy")
@@ -73,7 +73,9 @@ for epoch in range(1000):
         if epoch % 10 == 0:
             print("epoch:" + str(epoch) + "    MAE_test:" + str(loss_mean))
 
-    writer.add_scalar('Training Loss Feature Selected', loss_total/step, epoch)
-    writer.add_scalar('Validation Loss Feature Selected', loss_mean, epoch)
+
+
+    writer.add_scalar('Training Loss', loss_total/step, epoch)
+    writer.add_scalar('Validation Loss', loss_mean, epoch)
 
 writer.close()
