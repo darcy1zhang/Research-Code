@@ -9,19 +9,20 @@ class Dataset(Dataset):
     def __init__(self, para, x, train_or_test):
         self.data = np.load(para)
         self.x = x
-        self.features_train = np.load("./data/features_train_without_resp_norm.npy")
-        self.features_test = np.load("./data/features_test_without_resp_norm.npy")
+        self.features_train = np.load("./data/features_train_without_resp.npy")
+        self.features_test = np.load("./data/features_test_without_resp.npy")
         self.train_or_test = train_or_test
 
     def __len__(self):
         return self.data.shape[0]
 
     def __getitem__(self, idx):
-
         if self.train_or_test == 0:
-            X_train = self.features_train[idx, [6,8,9,10,11]]
+            # X_train = self.features_train[idx, [6,8,9,10,11]]
+            X_train = x = 220 - (100 * self.features_train[idx, [8]])
         else:
-            X_train = self.features_test[idx, [6,8,9,10,11]] # [6,8,9,10,11]
+            # X_train = self.features_test[idx, [6,8,9,10,11]]
+            X_train = x = 220 - (100 * self.features_test[idx, [8]])
 
         if self.x == 0:
             Y_train = self.data[idx, 1004]

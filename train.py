@@ -4,8 +4,9 @@ from model import *
 import torch.nn.init as init
 from sklearn.preprocessing import MinMaxScaler
 from torch.utils.tensorboard import SummaryWriter
+import tsfel
 
-
+# X_train = tsfel.time_series_features_extractor(cfg_file, tmp, fs=100, window_size=250)
 
 
 criterion = nn.L1Loss()

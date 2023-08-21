@@ -10,7 +10,7 @@ def prediction(data_file):
     batch_num = 0
 
     # 预测S
-    model = torch.load("pth/fs5_sig.pth", map_location=torch.device('cpu'))
+    model = torch.load("pth/S_model_50_1.9573.pth", map_location=torch.device('cpu'))
     # model = torch.load("./pth/S_model_490_15.5063.pth")
     dataset_test = Dataset(data_file, 0, 1)
     train_loader = DataLoader(dataset_test, batch_size=16, shuffle=False)
