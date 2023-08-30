@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema, find_peaks
 from scipy.interpolate import interp1d
-from sklearn.preprocessing import MinMaxScaler
-from scipy.stats import skew, kurtosis
 
 def update_array(a, data_tmp):
     i = 0
@@ -25,16 +23,9 @@ def delete_unique(a):
     filtered_a = a[np.abs(a - mean) <= threshold * std]
     return filtered_a
 
-def get_mag_0(peaks2, data_tmp):
-    return np.mean(data_tmp[peaks2[::2]])
-
-def get_mag_1(peaks2, data_tmp):
-    return np.mean(data_tmp[peaks2[1::2]])
-
 def get_features(data_tmp):
     max = np.max(data_tmp)
     min = np.min(data_tmp)
-    data_tmp_raw = data_tmp
     data_tmp = data_tmp / max
 
     fs = 100
@@ -60,79 +51,15 @@ def get_features(data_tmp):
     diff_21 = peaks2[2::2] - peaks2[1:-1:2]
     diff_22 = peaks2[2::2] - peaks2[:-2:2]
 
-    diff_12 = delete_unique(diff_12)
-    diff_21 = delete_unique(diff_21)
-    diff_22 = delete_unique(diff_22)
-
     m_12 = np.mean(diff_12)
     m_21 = np.mean(diff_21)
     m_22 = np.mean(diff_22)
-
-    mag_0 = get_mag_0(peaks2, data_tmp_raw)
-    mag_1 = get_mag_1(peaks2, data_tmp_raw)
-
-    diff_12_mean = np.mean(diff_12)
-    diff_21_mean = np.mean(diff_21)
-
-    if diff_12_mean < diff_21_mean:
-        diff_min = diff_12_mean
-    else:
-        diff_min = diff_21_mean
-
-    diff_min = int(diff_min / 2)
-
-    kurt = []
-    for i in range(1, len(peaks2) - 1):
-        seg = data_tmp[peaks2[i] - diff_min:peaks2[i] + diff_min]
-        if len(seg) > 0:
-            kurt.append(kurtosis(seg))
-
-    kurt2 = kurt[::2]
-    kurt1 = kurt[1::2]
-
-    kurt2_mean = np.mean(kurt2)
-    kurt1_mean = np.mean(kurt1)
-
-    sk = []
-    for i in range(1, len(peaks2) - 1):
-        seg = data_tmp[peaks2[i] - diff_min:peaks2[i] + diff_min]
-        if len(seg) > 0:
-            sk.append(skew(seg))
-
-    skew2 = sk[::2]
-    skew1 = sk[1::2]
-
-    skew2_mean = np.mean(skew2)
-    skew1_mean = np.mean(skew1)
-
-    features = np.array([m_12, m_21, m_22, mag_0, mag_1, mag_0 / mag_1, kurt2_mean, kurt1_mean, skew1_mean, skew2_mean])
-    # features = np.array([m_12, m_21])
+    features = np.arrary([m_12, m_21, m_22])
 
     return features
+    # print(diff_12)
+    # print(diff_21)
+    # print(diff_22)
 
-
-if __name__ == "__main__":
-    data_train = np.load("./data/simu_20000_0.1_90_140_train.npy")
-    features = get_features(data_train[0, :1000])
-    for i in range(1, 20000):
-        tmp = get_features(data_train[i, :1000])
-        features = np.vstack((features, tmp))
-    np.save("./data/features_train.npy", features)
-
-    data_train = np.load("./data/simu_10000_0.1_141_178_test.npy")
-    features = get_features(data_train[0, :1000])
-    for i in range(1, 10000):
-        tmp = get_features(data_train[i, :1000])
-        features = np.vstack((features, tmp))
-    np.save("./data/features_test.npy", features)
-
-    scaler = MinMaxScaler()
-
-    tmp = np.load("./data/features_train.npy")
-    scaler.fit(tmp)
-    tmp = scaler.transform(tmp)
-    np.save("./data/features_train_norm.npy", tmp)
-
-    tmp = np.load("./data/features_test.npy")
-    tmp = scaler.transform(tmp)
-    np.save("./data/features_test_norm.npy", tmp)
+data_test = np.load("data_test.npy")
+data_tmp = data_test[4235, :1000]
