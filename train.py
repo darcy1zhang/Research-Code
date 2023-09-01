@@ -15,7 +15,7 @@ criterion = criterion.cuda()
 model = MLP().cuda()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-writer = SummaryWriter('logs/fs5_sigmoid')
+# writer = SummaryWriter('logs/fs5_sigmoid')
 
 
 tmp = np.load("./data/simu_20000_0.1_90_140_train.npy")
@@ -76,7 +76,7 @@ for epoch in range(1000):
 
 
 
-    writer.add_scalar('Training Loss', loss_total/step, epoch)
-    writer.add_scalar('Validation Loss', loss_mean, epoch)
-
-writer.close()
+#     writer.add_scalar('Training Loss', loss_total/step, epoch)
+#     writer.add_scalar('Validation Loss', loss_mean, epoch)
+#
+# writer.close()

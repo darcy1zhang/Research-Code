@@ -61,5 +61,6 @@ def get_features(data_tmp):
     # print(diff_21)
     # print(diff_22)
 
-data_test = np.load("data_test.npy")
-data_tmp = data_test[4235, :1000]
+if __name__ == "__main__":
+    data_test = np.load("data_test.npy")
+    data_tmp = data_test[4235, :1000]
