@@ -3,9 +3,9 @@ from utils import *
 from dataset import *
 
 def prediction(data_file):
-    model = torch.load("./pth/D_cnn.pth" ,map_location = torch.device('cpu'))
-    dataset_test = Dataset(data_file, 1)
-    train_loader = DataLoader(dataset_test, batch_size=16, shuffle=False)
+    model = torch.load("./pth/S_model_120_9.6622.pth" ,map_location = torch.device('cpu'))
+    dataset_test = Dataset(data_file, 0)
+    train_loader = DataLoader(dataset_test, batch_size=16, shuffle=False, drop_last=True)
 
     criterion = nn.L1Loss()
 
@@ -59,7 +59,7 @@ def prediction(data_file):
     return dp_MAE, dp_prediction
 
 if __name__ == "__main__":
-    data_file = "../data/raise_high_peak.npy"
+    data_file = "../data/S_160_180.npy"
     prediction_file = '../data/prediction.npy'
 
     # dp_MAE, dp_prediction, sp_MAE, sp_prediction = prediction(data_file)
@@ -71,12 +71,12 @@ if __name__ == "__main__":
     # print('===============')
     # print('Systolic MAE:', sp_MAE)
     print('===============')
-    print('Diastolic MAE:', dp_MAE)
+    print('MAE:', dp_MAE)
     print('===============')
 
     data_set = np.load(data_file)
     # sp_label = data_set[:, -2]
-    dp_label = data_set[:, -1]
+    dp_label = data_set[:992, -2]
 
     dp_prediction = np.load(prediction_file)
 

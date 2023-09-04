@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, Dataset
 class Dataset(Dataset):
 
     def __init__(self, para, x):
-        self.data = np.load(para)
+        self.data = np.load(para)[:1000,:]
         self.x = x
 
     def __len__(self):
