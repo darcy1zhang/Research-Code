@@ -22,7 +22,7 @@ optimizer = optim.Adam(model.parameters(), lr=hparams.lr)
 
 l2_lambda = hparams.l2_lambda
 loss_best = hparams.loss_best
-irm_lambda = 0.05  # 调整IRM的lambda值
+irm_lambda = 0.01  # 调整IRM的lambda值
 
 env1_train_dataset = Dataset("../data/S_90_110.npy", 0)
 env1_train_loader = DataLoader(env1_train_dataset, batch_size=hparams.batch_size, shuffle=True, drop_last=True)

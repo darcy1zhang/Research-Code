@@ -10,14 +10,14 @@ def prediction(data_file):
     batch_num = 0
 
     # 预测S
-    model = torch.load("pth/S_model_50_1.9573.pth", map_location=torch.device('cpu'))
+    model = torch.load("pth/S_BPD_feature.pth", map_location=torch.device('cpu'))
     # model = torch.load("./pth/S_model_490_15.5063.pth")
     dataset_test = Dataset(data_file, 0, 1)
     train_loader = DataLoader(dataset_test, batch_size=16, shuffle=False)
 
-    tmp = np.load("./data/simu_20000_0.1_90_140_train.npy")
-    max = np.max(tmp[:, 1004])
-    min = np.min(tmp[:, 1004])
+    # tmp = np.load("./data/simu_20000_0.1_90_140_train.npy")
+    # max = np.max(tmp[:, 1004])
+    # min = np.min(tmp[:, 1004])
 
     loss_total = 0
     batch_num = 0
@@ -46,7 +46,7 @@ def prediction(data_file):
     return sp_MAE, sp_prediction
 
 if __name__ == "__main__":
-    data_file = "./data/test_without_resp.npy"
+    data_file = "./data/BPD_S_110_130.npy"
     prediction_file = './data/prediction.npy'
 
     sp_MAE, sp_prediction = prediction(data_file)
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     print('===============')
 
     data_set = np.load(data_file)
-    sp_label = data_set[:, -2]
+    sp_label = data_set[:, 1004]
 
     [sp_prediction] = np.load(prediction_file)
 

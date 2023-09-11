@@ -63,10 +63,10 @@ loss_best = hparams.loss_best
 #         print("epoch:" + str(epoch) + "    MAE_test:" + str(loss_mean))
 #     writer.add_scalars("S_loss", {"train": loss_total / step, "validation": loss_mean}, epoch)
 
-train_dataset = Dataset("../data/simu_20000_0.1_90_140_train.npy", 1)
-train_loader = DataLoader(train_dataset, batch_size=hparams.batch_size, shuffle=True)
-test_dataset = Dataset("../data/simu_10000_0.1_141_178_test.npy", 1)
-test_loader = DataLoader(test_dataset, batch_size=hparams.batch_size, shuffle=True)
+train_dataset = Dataset("../data/BPD_S_90_110.npy", 0)
+train_loader = DataLoader(train_dataset, batch_size=hparams.batch_size, shuffle=True, drop_last=True)
+test_dataset = Dataset("../data/BPD_S_110_130.npy", 0)
+test_loader = DataLoader(test_dataset, batch_size=hparams.batch_size, shuffle=True, drop_last=True)
 
 for epoch in range(300):
     model.train()
@@ -93,7 +93,7 @@ for epoch in range(300):
         step = step + 1
 
     tmp = './pth/D_model_%d_%.4f.pth' % (epoch, loss_total/step)
-    if epoch % 30 == 0:
+    if epoch % 6 == 0:
         torch.save(model, tmp)
     print("D--epoch:" + str(epoch) + "    MAE:" + str(loss_total/step))
 

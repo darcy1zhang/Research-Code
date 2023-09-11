@@ -3,7 +3,7 @@ from utils import *
 from dataset import *
 
 def prediction(data_file):
-    model = torch.load("pth/S_BPD_CNN.pth", map_location = torch.device('cpu'))
+    model = torch.load("pth/Without_contrastive_learning.pth", map_location = torch.device('cpu'))
     dataset_test = Dataset(data_file, 0)
     train_loader = DataLoader(dataset_test, batch_size=16, shuffle=False, drop_last=True)
 
@@ -15,7 +15,7 @@ def prediction(data_file):
 
     for batch_idx, (data, target) in enumerate(train_loader):
         # data, target = data.cuda(), target.cuda()
-        output = model(data)
+        _, output = model(data)
 
         if 'dp_prediction' in locals():
             dp_prediction = torch.cat((dp_prediction, output), dim=0)
@@ -59,7 +59,7 @@ def prediction(data_file):
     return dp_MAE, dp_prediction
 
 if __name__ == "__main__":
-    data_file = "../data/BPD_S_110_130.npy"
+    data_file = "../data/simu_10000_0.1_141_178_test.npy"
     prediction_file = '../data/prediction.npy'
 
     # dp_MAE, dp_prediction, sp_MAE, sp_prediction = prediction(data_file)
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     data_set = np.load(data_file)
     # sp_label = data_set[:, -2]
-    dp_label = data_set[:2992, 1004]
+    dp_label = data_set[:992, 1004]
 
     dp_prediction = np.load(prediction_file)
 
