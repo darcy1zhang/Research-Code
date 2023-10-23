@@ -25,12 +25,49 @@ import torch.nn.init as init
 #             init.xavier_uniform_(m.weight)
 #             init.zeros_(m.bias)
 
+
+# mlp relu
 class MLP(nn.Module):
     def __init__(self):
         super(MLP, self).__init__()
         self.seq = nn.Sequential(
-        nn.Linear(1, 1),
+            nn.Linear(2, 4),
+            nn.ReLU(),
+            nn.BatchNorm1d(1),
+            nn.Linear(4, 4),
+            nn.ReLU(),
+            nn.BatchNorm1d(1),
+            nn.Linear(4, 4),
+            nn.ReLU(),
+            nn.BatchNorm1d(1),
+            nn.Linear(4, 4),
+            nn.Linear(4, 1),
         )
     def forward(self, x):
         x = self.seq(x)
         return x
+
+
+# #
+# class MLP(nn.Module):
+#     def __init__(self):
+#         super(MLP, self).__init__()
+#         self.seq = nn.Sequential(
+#             nn.Linear(2, 1),
+#         )
+#     def forward(self, x):
+#         x = self.seq(x)
+#         return x
+#
+# # mlp
+# class MLP(nn.Module):
+#     def __init__(self):
+#         super(MLP, self).__init__()
+#         self.seq = nn.Sequential(
+#             nn.Linear(2, 4),
+#             nn.Linear(4, 4),
+#             nn.Linear(4, 1),
+#         )
+#     def forward(self, x):
+#         x = self.seq(x)
+#         return x

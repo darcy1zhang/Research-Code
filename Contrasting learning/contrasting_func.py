@@ -91,7 +91,7 @@ class NTXentLoss(torch.nn.Module):
         return v
 
     def get_similarity_matrix(self, x):
-        similarity_matrix = np.zeros((x.shape[0], x.shape[0]))
+        similarity_matrix = torch.Tensor(x.shape[0], x.shape[0])
         for i in range(x.shape[0]):
             for j in range(x.shape[0]):
                 similarity_matrix[i][j] = torch.tensordot(x[i], x[j])
@@ -105,7 +105,7 @@ class NTXentLoss(torch.nn.Module):
         # print(representations.shape)
 
         similarity_matrix = self.get_similarity_matrix(representations)
-        similarity_matrix = torch.from_numpy(similarity_matrix)
+        # similarity_matrix = torch.from_numpy(similarity_matrix)
 
         # print(similarity_matrix.shape)
         # print(similarity_matrix)
@@ -133,7 +133,7 @@ class NTXentLoss(torch.nn.Module):
 
         labels = torch.zeros(2 * self.batch_size).to(self.device).long()
         loss = self.criterion(logits, labels)
-        loss.requires_grad = True
+
 
         return loss / (2 * self.batch_size)
 

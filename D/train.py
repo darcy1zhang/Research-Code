@@ -63,9 +63,9 @@ loss_best = hparams.loss_best
 #         print("epoch:" + str(epoch) + "    MAE_test:" + str(loss_mean))
 #     writer.add_scalars("S_loss", {"train": loss_total / step, "validation": loss_mean}, epoch)
 
-train_dataset = Dataset("../data/BPD_S_90_110.npy", 0)
+train_dataset = Dataset("../data/simu_20000_0.1_90_140_train.npy", 1)
 train_loader = DataLoader(train_dataset, batch_size=hparams.batch_size, shuffle=True, drop_last=True)
-test_dataset = Dataset("../data/BPD_S_110_130.npy", 0)
+test_dataset = Dataset("../data/simu_10000_0.1_141_178_test.npy", 1)
 test_loader = DataLoader(test_dataset, batch_size=hparams.batch_size, shuffle=True, drop_last=True)
 
 for epoch in range(300):

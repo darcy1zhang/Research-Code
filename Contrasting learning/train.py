@@ -14,7 +14,7 @@ optimizer = optim.Adam(model.parameters(), lr=hparams.lr)
 #
 l2_lambda = hparams.l2_lambda
 loss_best = hparams.loss_best
-lamda_contrast = 0.5
+lamda_contrast = 0.1
 NT = NTXentLoss("cpu", 16, 0.2, True)
 
 
@@ -30,6 +30,9 @@ for epoch in range(1000):
 
     loss_total = 0
     step = 0
+    wzy1 = 0
+    wzy2 = 0
+    wzy3 = 0
 
     for batch_idx, (data, target) in enumerate(train_loader):
         # data, target = data.cuda(), target.cuda()
@@ -72,12 +75,24 @@ for epoch in range(1000):
 
         optimizer.zero_grad()
         loss = loss_reg + loss_ERM + loss_contrast * lamda_contrast
+        # loss = loss_reg + loss_ERM
         # loss = loss_contrast
+        wzy1 += loss_reg.item()
+        wzy2 += loss_ERM.item()
+        wzy3 += loss_contrast.item() * lamda_contrast
+
         loss.backward()
         optimizer.step()
 
         loss_total = loss_total + loss.item()
         step = step + 1
+
+    print("reg")
+    print(wzy1/step)
+    print("ERM")
+    print(wzy2/step)
+    print("contrast")
+    print(wzy3/step)
 
     tmp = './pth/D_model_%d_%.4f.pth' % (epoch, loss_total/step)
     if epoch % 30 == 0:

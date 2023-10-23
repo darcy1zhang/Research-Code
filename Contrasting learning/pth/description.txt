@@ -1,0 +1,2 @@
+S_contrastive_learning:最终mae为33，用的是TSTCC的contextual模块，训练了300轮
+S_scg_song_code:用song提供的contrast代码，训练了780轮，mae最终为28
