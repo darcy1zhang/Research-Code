@@ -27,26 +27,42 @@ import torch.nn.init as init
 
 
 # mlp relu
+# class MLP(nn.Module):
+#     def __init__(self):
+#         super(MLP, self).__init__()
+#         self.seq = nn.Sequential(
+#             nn.Linear(2, 4),
+#             nn.ReLU(),
+#             nn.BatchNorm1d(1),
+#             nn.Linear(4, 4),
+#             nn.ReLU(),
+#             nn.BatchNorm1d(1),
+#             nn.Linear(4, 4),
+#             nn.ReLU(),
+#             nn.BatchNorm1d(1),
+#             nn.Linear(4, 4),
+#             nn.Linear(4, 1),
+#         )
+#     def forward(self, x):
+#         x = self.seq(x)
+#         return x
+
+
 class MLP(nn.Module):
     def __init__(self):
         super(MLP, self).__init__()
         self.seq = nn.Sequential(
-            nn.Linear(2, 4),
+            nn.Linear(3, 8),
             nn.ReLU(),
-            nn.BatchNorm1d(1),
-            nn.Linear(4, 4),
+            nn.Linear(8, 8),
             nn.ReLU(),
-            nn.BatchNorm1d(1),
-            nn.Linear(4, 4),
-            nn.ReLU(),
-            nn.BatchNorm1d(1),
-            nn.Linear(4, 4),
-            nn.Linear(4, 1),
+            # nn.Linear(8, 8),
+            # nn.ReLU(),
+            nn.Linear(8, 1),
         )
     def forward(self, x):
         x = self.seq(x)
         return x
-
 
 # #
 # class MLP(nn.Module):

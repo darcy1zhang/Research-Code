@@ -105,7 +105,8 @@ def plot_2vectors(label, pred, name):
     sorted_id = sorted(range(len(list1)), key=lambda k: list1[k])
 
     plt.clf()
-    plt.text(0,np.min(list2),f'MAE={mae}')
+    # plt.text(0,np.min(list2),f'MAE={mae}')
+    plt.text(0, 120, f'MAE={mae}')
 
     # plt.plot(range(num_rows), list2, label=name + ' prediction')
     plt.scatter(np.arange(list2.shape[0]),list2[sorted_id],s = 1, alpha=0.5,label=f'{name} prediction', color='blue')
@@ -113,6 +114,8 @@ def plot_2vectors(label, pred, name):
     plt.scatter(np.arange(list1.shape[0]),list1[sorted_id],s = 1, alpha=0.5,label=f'{name} label', color='red')
 
     # plt.plot(range(num_rows), list1, 'r.', label=name + ' label')
+
+    plt.ylim(100,200)
 
     plt.legend()
     plt.savefig(f'./pic/{name}.png')

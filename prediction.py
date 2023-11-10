@@ -10,14 +10,14 @@ def prediction(data_file):
     batch_num = 0
 
     # 预测S
-    model = torch.load("pth/y1y2_fcn_60_5.2775.pth", map_location=torch.device('cpu'))
+    model = torch.load("pth/2S_60epochs_4.6_5.0.pth", map_location=torch.device('cpu'))
     # model = torch.load("./pth/S_model_490_15.5063.pth")
-    dataset_test = Dataset(data_file, 1, 1)
+    dataset_test = Dataset(data_file, 0, 1)
     train_loader = DataLoader(dataset_test, batch_size=4, shuffle=False)
 
-    tmp = np.load("./data/simu_20000_0.1_90_140_train.npy")
-    max = np.max(tmp[:, 1004])
-    min = np.min(tmp[:, 1004])
+    # tmp = np.load("./data/simu_20000_0.1_90_140_train.npy")
+    # max = np.max(tmp[:, 1004])
+    # min = np.min(tmp[:, 1004])
 
     loss_total = 0
     batch_num = 0
@@ -58,11 +58,11 @@ if __name__ == "__main__":
     print('===============')
 
     data_set = np.load("./data/simu_10000_0.1_141_178_test.npy")
-    sp_label = data_set[:, 1005]
+    sp_label = data_set[:, 1004]
 
     [sp_prediction] = np.load(prediction_file)
 
-    plot_2vectors(sp_label, sp_prediction, 'dp')
+    plot_2vectors(sp_label, sp_prediction, 'sp')
 
 
 
