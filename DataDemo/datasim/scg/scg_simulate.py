@@ -110,7 +110,7 @@ def scg_simulate(
             sampling_rate=sampling_rate,
             noise_amplitude=noise,
             noise_frequency=[5, 10, 100],
-            noise_shape="laplace",
+            noise_shape="normal",
             random_state=random_state,
             silent=True,
         )
@@ -155,13 +155,14 @@ def _scg_simulate_daubechies(duration=10, length=None, sampling_rate=100, heart_
     # cardiac = np.concatenate([cardiac_s, cardiac_d])
 
     cardiac_length = int(100*sampling_rate/heart_rate) #sampling_rate #
-    ind = random.randint(17, 34) 
-    cardiac_s = scipy.signal.wavelets.daub(ind)
-    cardiac_d = scipy.signal.wavelets.daub(ind)*0.3*diastolic/80 # change height to 0.3
+    # ind = random.randint(17, 34)
+    ind = random.randint(3, 9)
+    cardiac_s = scipy.signal.morlet(100,ind)
+    cardiac_d = scipy.signal.morlet(100,ind)*0.3*diastolic/80 # change height to 0.3
     cardiac_s = scipy.signal.resample(cardiac_s, 100)
     cardiac_d = scipy.signal.resample(cardiac_d, 100)
-    cardiac_s = cardiac_s[0:40]
-    distance = 180-systolic # systolic 81-180
+    cardiac_s = cardiac_s[0:80]
+    distance = 140-systolic # systolic 81-180
     # distance = cardiac_length - len(cardiac_s) - len(cardiac_d) - systolic # here 140 = 40 (cardiac_s) + 100 (cardiac_d) as below
     zero_signal = np.zeros(distance)
     cardiac = np.concatenate([cardiac_s, zero_signal, cardiac_d])
